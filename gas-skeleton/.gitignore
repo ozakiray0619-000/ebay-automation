@@ -1,0 +1,7 @@
+.clasp.json
+.clasprc.json
+.spreadsheet-url
+node_modules/
+*.log
+.env
+.env.local
