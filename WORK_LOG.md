@@ -28,7 +28,7 @@
 | F1 | バイヤーメッセージ取得 | gas-reply / F1_Messages.gs | ✅ モック動作確認済(2026-06-07) |
 | F2 | AI返信案生成（Claude API） | gas-reply / F2_AIReply.gs | ⏸ パイプラインOK・ANTHROPIC_API_KEY未設定でプレースホルダ |
 | F3 | Discord 通知（Webhook） | gas-reply / F3_Discord.gs | ✅ Discord実通知 着弾確認済(2026-06-07) |
-| F4 | ワンクリック返信送信（Discord Bot） | 未実装 | 🔜 次フェーズ（次回の最優先タスク） |
+| F4 | ワンクリック返信送信（リンク方式） | gas-reply / F4_WebApp.gs, F4_EbaySend.gs | ✅ メイン実装・モックテスト完了(2026-06-07)。残: ItemID列/オファー受諾拒否/order紐付/実送信 |
 
 ---
 
@@ -137,19 +137,29 @@
 
 ---
 
+### [2026-06-07 その2] F4 ワンクリック送信 実装＋モックテスト
+
+- **方式判断**: Discordのネイティブボタンは GAS単体では不可（GAS WebアプリはHTTPヘッダ `X-Signature-Ed25519` を読めず署名検証できない）。→ **リンク方式**を採用（Discord通知の確認リンク→GASのWebアプリ画面で確認・編集・送信）。"全部GASで完結"の現実解。
+- **新規/更新ファイル**: `F4_WebApp.gs`(doGet/レビューHTML/`f4SubmitSend`/`f4Link_`/`f4GenerateSecret`/`showF4Setup`) ・ `F4_EbaySend.gs`(`ebaySendMemberMessage_`=AddMemberMessageRTQ / `ebayRespondToBestOffer_`=RespondToBestOffer、`F4_MOCK_SEND`で切替) ・ `F3_Discord.gs`(通知にリンク追加) ・ `Config/Menu/appsscript.json`(webapp設定 executeAs=自分/access=全員)
+- **新Scriptプロパティ**: `WEBAPP_URL`(/exec) / `F4_LINK_SECRET`(任意) / `F4_MOCK_SEND`(既定mock)
+- **モックテスト成功**: デプロイ→WEBAPP_URL登録→f4GenerateSecret→resetMockSeen→mockPollMessages→Discordのリンク→レビュー画面で編集→送信→「✅送信(モック)」、返信ログ更新＋二重送信防止OK
+
+---
+
 ## 次にやること（最優先）
 
-1. **【次回の最優先】F4 ワンクリック送信の実装＋テスト**
-   - Discord Bot（Application）作成・サーバー登録
-   - ボタン押下を受けるInteractions Endpoint＋Ed25519署名検証（GASでは重い→Cloud Run等の代替も検討）
-   - eBay送信API: 返信=`AddMemberMessageRTQ` / オファー=`RespondToBestOffer`
-   - 二重送信防止（送信済ボタンの無効化）
+1. **F4 残課題（コードで解決可・外部依存なし）**
+   - ① 返信ログに **ItemID列**を追加・保存（実送信 AddMemberMessageRTQ はItemID必須）
+   - ② **オファー受諾/拒否**の通知＋リンク結線（RespondToBestOffer。バックエンド関数は実装済）
+   - ③ **Order紐付きメッセージ**（在庫発送_作業シート行）のF4リンク対応
 
-2. **F2 本番化**: gas-reply に `ANTHROPIC_API_KEY`（しゅんすけ提供）を設定し、本物のAI返信案生成を確認
+2. **F2 本番化**: gas-reply に `ANTHROPIC_API_KEY`（しゅんすけ提供）を設定し本物のAI返信案を確認【外部待ち】
 
-3. **Production Keyset 審査結果の確認**（developer.ebay.com/my/keys）
+3. **実送信切替**: eBay本番Keyset審査完了後 `F4_MOCK_SEND=false`＋`EBAY_AUTH_TOKEN`設定【外部待ち】
 
-4. **進捗のGitHub保存**: 更新したWORK_LOG等を `ozakiray0619-000/ebay-automation` へ push（ユーザーPCから）
+4. **Production Keyset 審査結果の確認**（developer.ebay.com/my/keys）
+
+5. **進捗のGitHub保存**: 更新したWORK_LOG等＋gas-reply新ファイルを `ozakiray0619-000/ebay-automation` へ push（ユーザーPCから）
 
 ---
 
