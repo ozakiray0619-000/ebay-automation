@@ -1,0 +1,4 @@
+{
+  "_comment": "このファイルを config.json にコピーし、Discord Webhook URL を入れると本物の通知が飛びます。未設定ならドライラン(コンソール表示のみ)。",
+  "DISCORD_WEBHOOK_URL": ""
+}

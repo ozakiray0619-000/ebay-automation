@@ -1,0 +1,28 @@
+{
+  "_comment": "偽eBayサーバーが返すダミーデータ。ここを編集すれば任意の注文/オファーを通知テストできる。",
+  "orders": [
+    {
+      "orderId": "MOCK-ORD-1001",
+      "buyerUsername": "tokyo_collector",
+      "title": "Vintage Camera Lens 50mm f/1.4",
+      "total": "149.99", "currency": "USD",
+      "fullName": "John Smith", "email": "john@example.com", "country": "US",
+      "status": "NOT_STARTED"
+    },
+    {
+      "orderId": "MOCK-ORD-1002",
+      "buyerUsername": "berlin_maker",
+      "title": "Handmade Leather Wallet - Brown",
+      "total": "38.00", "currency": "USD",
+      "fullName": "Anna Müller", "email": "anna@example.de", "country": "DE",
+      "status": "IN_PROGRESS"
+    }
+  ],
+  "offers": [
+    {
+      "offerId": "MOCK-OFF-2001", "itemId": "110047650001",
+      "title": "Vintage Camera Lens 50mm f/1.4",
+      "buyer": "osaka_buyer", "price": "120.00", "status": "Active"
+    }
+  ]
+}

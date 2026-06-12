@@ -1,0 +1,7 @@
+# 個別の9ファイル + appsscript.json だけを push する。
+# バンドル(全部入り)を一緒に push すると関数名が重複して壊れるため除外。
+eBay返信BOT_全部入り.gs
+*.md
+*.sample
+.clasp.json
+.claspignore
